@@ -6,86 +6,96 @@ const ArticleListPage = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Состояние для текущей страницы
   const [currentPage, setCurrentPage] = useState(1);
   const [totalArticles, setTotalArticles] = useState(0);
-  const limit = 5; // Количество статей на одной странице
+  const limit = 5;
 
   useEffect(() => {
     const fetchDate = async () => {
       try {
         setLoading(true);
         setError(null);
-        // Передаем текущую страницу в наш API сервис
         const data = await getArticles(currentPage);
         setArticles(data.articles);
-        setTotalArticles(data.articlesCount); // Сохраняем общее кол-во для расчета страниц
-      } catch (err) {
-        setError(
-          err.response?.status === 429
-            ? 'Too many requests. Please wait a minute.'
-            : 'Error loading articles.',
-        );
+        setTotalArticles(data.articlesCount);
+      } catch {
+        setError('Error loading articles. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
-
     fetchDate();
-  }, [currentPage]); // Эффект срабатывает каждый раз, когда меняется currentPage
+  }, [currentPage]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div style={{ color: 'red' }}>{error}</div>;
+  if (loading) return <div className="status">Loading articles...</div>;
+  if (error) return <div className="status error">{error}</div>;
 
-  // Расчет общего количества страниц
   const totalPages = Math.ceil(totalArticles / limit);
 
   return (
-    <div>
+    <div className="container">
       {articles.map((article) => (
-        <div
-          key={article.slug}
-          style={{
-            padding: '15px',
-            borderBottom: '1px solid #eee',
-            marginBottom: '10px',
-          }}
-        >
-          <Link to={`/articles/${article.slug}`}>
-            <h2 style={{ margin: '0 0 10px 0', color: '#1890ff' }}>
-              {article.title}
-            </h2>
-          </Link>
-          <p>{article.description}</p>
+        <div key={article.slug} className="article-card">
+          <div className="article-header">
+            <div className="article-info">
+              <Link to={`/articles/${article.slug}`} className="article-title">
+                {article.title}
+              </Link>
+              <div className="tag-list">
+                {article.tagList.map((tag, index) => (
+                  <span key={index} className="tag">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="article-author">
+              <div className="author-text">
+                <span className="author-name">{article.author.username}</span>
+                <span className="article-date">
+                  {new Date(article.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+              <img
+                src={article.author.image}
+                alt="avatar"
+                className="author-avatar"
+                onError={(e) => {
+                  e.target.src =
+                    'https://static.productionready.io/images/smiley-cyrus.jpg';
+                }}
+              />
+            </div>
+          </div>
+
+          <p className="article-description">{article.description}</p>
+
+          <div className="article-footer">
+            <span className="likes">❤️ {article.favoritesCount} likes</span>
+          </div>
         </div>
       ))}
 
-      {/* Блок пагинации */}
-      <div
-        style={{
-          marginTop: '20px',
-          display: 'flex',
-          gap: '10px',
-          alignItems: 'center',
-        }}
-      >
+      <div className="pagination">
         <button
+          className="page-btn"
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((prev) => prev - 1)}
         >
-          Назад
+          &larr; prev
         </button>
 
-        <span>
-          Страница {currentPage} из {totalPages}
+        <span className="page-info">
+          Page <strong>{currentPage}</strong> of {totalPages}
         </span>
 
         <button
+          className="page-btn"
           disabled={currentPage === totalPages}
           onClick={() => setCurrentPage((prev) => prev + 1)}
         >
-          Вперед
+          Next &rarr;
         </button>
       </div>
     </div>
