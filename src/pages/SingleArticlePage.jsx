@@ -36,12 +36,32 @@ const SingleArticlePage = () => {
 
       <article className="full-article">
         <header className="article-header">
-          <h1 className="main-title">{article.title}</h1>
+          {/* Левая часть: заголовок и теги */}
+          <div className="title-section">
+            <h1 className="main-title">{article.title}</h1>
+            <div className="tag-list">
+              {article.tagList.map((tag, i) => (
+                <span key={i} className="tag">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
 
+          {/* Правая часть: автор и лайки */}
           <div className="article-meta-large">
             <div className="author-block">
+              <div className="author-details">
+                <span className="author-name">{article.author.username}</span>
+                <span className="date">
+                  {new Date(article.createdAt).toLocaleDateString()}
+                </span>
+              </div>
               <img
-                src={article.author.image}
+                src={
+                  article.author.image ||
+                  'https://static.productionready.io/images/smiley-cyrus.jpg'
+                }
                 alt="avatar"
                 className="author-avatar-large"
                 onError={(e) => {
@@ -49,22 +69,8 @@ const SingleArticlePage = () => {
                     'https://static.productionready.io/images/smiley-cyrus.jpg';
                 }}
               />
-              <div className="author-details">
-                <span className="author-name">{article.author.username}</span>
-                <span className="date">
-                  {new Date(article.createdAt).toLocaleDateString()}
-                </span>
-              </div>
             </div>
             <div className="likes-badge">❤️ {article.favoritesCount}</div>
-          </div>
-
-          <div className="tag-list">
-            {article.tagList.map((tag, i) => (
-              <span key={i} className="tag">
-                {tag}
-              </span>
-            ))}
           </div>
         </header>
 

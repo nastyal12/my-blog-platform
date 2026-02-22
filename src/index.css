@@ -2,20 +2,96 @@
   --deep-blue: #003a70;
   --soft-green: #e8f5e9;
   --dark-green: #2e7d32;
+  --bg-color: #f4f7f6;
 }
 
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-color);
+}
+
+/* --- ШАПКА ПРИЛОЖЕНИЯ --- */
+.main-header {
+  background-color: var(--deep-blue);
+  padding: 15px 0;
+  color: white;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.logo {
+  color: white;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.auth-nav a, .user-profile-link {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: 500;
+}
+
+.sign-up-link {
+  border: 1px solid white;
+  padding: 5px 15px;
+  border-radius: 4px;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 2px solid var(--soft-green);
+  vertical-align: middle;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* --- ГЛАВНЫЙ КОНТЕЙНЕР --- */
+.container {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* --- КАРТОЧКИ СТАТЕЙ --- */
 .article-card {
   background: white;
   border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 25px;
+  margin-bottom: 25px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  border-top: 4px solid var(--deep-blue); /* Синий акцент сверху */
+  border-top: 4px solid var(--deep-blue);
 }
 
 .article-header {
   display: flex;
-  justify-content: space-between; /* Заголовок слева, автор справа */
+  justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 15px;
 }
@@ -23,25 +99,14 @@
 .article-title {
   color: var(--deep-blue);
   text-decoration: none;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: bold;
-  display: block;
-  margin-bottom: 8px;
 }
 
-.article-title:hover {
-  color: var(--dark-green);
-}
-
-/* Стили автора */
 .article-author {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: fit-content;
-}
-
-.author-text {
   text-align: right;
 }
 
@@ -49,40 +114,81 @@
   display: block;
   font-weight: bold;
   color: var(--deep-blue);
-  font-size: 14px;
+}
+/* Добавь это в index.css, чтобы аватарки не растягивались, если загрузится огромная картинка */
+/* Базовые стили для всех маленьких аватарок */
+.author-avatar, 
+.header-avatar {
+  width: 35px !important;
+  height: 35px !important;
+  min-width: 35px;
+  min-height: 35px;
+  flex-shrink: 0; /* Запрещает флексу сжимать картинку */
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #eee;
 }
 
-.article-date {
-  font-size: 12px;
-  color: #999;
-}
-
-.author-avatar {
-  width: 40px;
-  height: 40px;
+/* Стили для КРУПНОЙ аватарки на странице статьи */
+.author-avatar-large {
+  width: 45px !important;
+  height: 45px !important;
+  min-width: 45px;
+  min-height: 45px;
+  flex-shrink: 0;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--soft-green);
 }
+/* --- ФОРМЫ (LOGIN / SIGNUP) --- */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
+}
 
-/* Теги и описание */
-.tag {
-  background: var(--soft-green);
-  color: var(--dark-green);
-  padding: 2px 8px;
+.auth-form {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  border-top: 6px solid var(--deep-blue);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 11px;
-  margin-right: 5px;
-  border: 1px solid #c8e6c9;
+  box-sizing: border-box;
 }
 
-.article-description {
-  color: #666;
-  font-size: 14px;
-  line-height: 1.5;
+.error-msg {
+  color: #f5222d;
+  font-size: 13px;
+  margin-top: 5px;
 }
 
-.article-footer {
-  margin-top: 15px;
-  font-size: 14px;
+.auth-btn {
+  width: 100%;
+  background: var(--deep-blue);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 20px 0;
 }
