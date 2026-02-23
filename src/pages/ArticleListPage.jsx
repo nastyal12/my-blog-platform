@@ -35,29 +35,35 @@ const ArticleListPage = ({ user }) => {
 
   // ФУНКЦИЯ ЛАЙКА
   const handleToggleLike = async (slug, favorited) => {
+    console.log('Клик по лайку:', slug, 'Статус:', favorited);
+
     if (!user) {
+      console.log('Юзер не найден, редирект на вход');
       navigate('/sign-in');
       return;
     }
 
     try {
-      let updatedArticle;
+      let response;
       if (favorited) {
-        const data = await unfavoriteArticle(slug);
-        updatedArticle = data.article;
+        console.log('Отправляем DELETE запрос (unfavorite)');
+        response = await unfavoriteArticle(slug);
       } else {
-        const data = await favoriteArticle(slug);
-        updatedArticle = data.article;
+        console.log('Отправляем POST запрос (favorite)');
+        response = await favoriteArticle(slug);
       }
 
-      // Обновляем только ту статью, на которую кликнули
+      // ВАЖНО: сервер возвращает объект { article: ... }
+      const updatedArticle = response.article;
+
       setArticles((prev) =>
         prev.map((article) =>
           article.slug === slug ? updatedArticle : article,
         ),
       );
     } catch (err) {
-      console.error('Like error:', err);
+      console.error('Ошибка при лайке:', err.response?.data || err.message);
+      alert('Не удалось поставить лайк. Проверь консоль (F12)');
     }
   };
 
@@ -109,10 +115,12 @@ const ArticleListPage = ({ user }) => {
           <p className="article-description">{article.description}</p>
 
           <div className="article-footer">
-            {/* КНОПКА ЛАЙКА */}
             <button
               className={`like-btn ${article.favorited ? 'active' : ''}`}
-              onClick={() => handleToggleLike(article.slug, article.favorited)}
+              onClick={(e) => {
+                e.preventDefault(); // На случай, если кнопка внутри Link
+                handleToggleLike(article.slug, article.favorited);
+              }}
             >
               {article.favorited ? '❤️' : '🤍'} {article.favoritesCount}
             </button>

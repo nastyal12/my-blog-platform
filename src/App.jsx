@@ -71,7 +71,7 @@ function App() {
         <main className="container">
           <Routes>
             <Route path="/" element={<Navigate to="/articles" />} />
-            <Route path="/articles" element={<ArticleListPage />} />
+            <Route path="/articles" element={<ArticleListPage user={user} />} />
             <Route
               path="/articles/:slug"
               element={<SingleArticlePage user={user} />}
