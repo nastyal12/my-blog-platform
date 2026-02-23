@@ -6,15 +6,12 @@ const SignUpPage = ({ setUser }) => {
   const {
     register,
     handleSubmit,
-    watch,
+    getValues,
     formState: { errors },
     setError,
   } = useForm({ mode: 'onBlur' });
 
   const navigate = useNavigate();
-
-  // Следим за значением пароля, чтобы сравнить его с "Repeat Password"
-  const password = watch('password');
 
   const onSubmit = async (data) => {
     try {
@@ -97,12 +94,12 @@ const SignUpPage = ({ setUser }) => {
           <label>Repeat Password</label>
           <input
             type="password"
-            placeholder="Password"
-            className={errors.confirmPassword ? 'input-error' : ''}
             {...register('confirmPassword', {
-              required: 'Please repeat your password',
-              validate: (value) => value === password || 'Passwords must match',
+              required: 'Please confirm your password',
+              validate: (value) =>
+                value === getValues('password') || 'The passwords do not match', // Используем getValues
             })}
+            placeholder="Repeat Password"
           />
           {errors.confirmPassword && (
             <p className="error-msg">{errors.confirmPassword.message}</p>

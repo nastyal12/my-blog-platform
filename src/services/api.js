@@ -47,5 +47,15 @@ export const updateArticle = async (slug, data) => {
 export const deleteArticle = async (slug) => {
   await api.delete(`/articles/${slug}`);
 };
+// Поставить лайк
+export const favoriteArticle = async (slug) => {
+  const response = await api.post(`/articles/${slug}/favorite`);
+  return response.data;
+};
 
+// Убрать лайк
+export const unfavoriteArticle = async (slug) => {
+  const response = await api.delete(`/articles/${slug}/favorite`);
+  return response.data;
+};
 export default api;

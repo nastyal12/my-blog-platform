@@ -1,14 +1,20 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getArticles } from '../services/api';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  getArticles,
+  favoriteArticle,
+  unfavoriteArticle,
+} from '../services/api';
 
-const ArticleListPage = () => {
+const ArticleListPage = ({ user }) => {
+  // Добавили user из пропсов
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalArticles, setTotalArticles] = useState(0);
   const limit = 5;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDate = async () => {
@@ -26,6 +32,34 @@ const ArticleListPage = () => {
     };
     fetchDate();
   }, [currentPage]);
+
+  // ФУНКЦИЯ ЛАЙКА
+  const handleToggleLike = async (slug, favorited) => {
+    if (!user) {
+      navigate('/sign-in');
+      return;
+    }
+
+    try {
+      let updatedArticle;
+      if (favorited) {
+        const data = await unfavoriteArticle(slug);
+        updatedArticle = data.article;
+      } else {
+        const data = await favoriteArticle(slug);
+        updatedArticle = data.article;
+      }
+
+      // Обновляем только ту статью, на которую кликнули
+      setArticles((prev) =>
+        prev.map((article) =>
+          article.slug === slug ? updatedArticle : article,
+        ),
+      );
+    } catch (err) {
+      console.error('Like error:', err);
+    }
+  };
 
   if (loading) return <div className="status">Loading articles...</div>;
   if (error) return <div className="status error">{error}</div>;
@@ -58,7 +92,10 @@ const ArticleListPage = () => {
                 </span>
               </div>
               <img
-                src={article.author.image}
+                src={
+                  article.author.image ||
+                  'https://static.productionready.io/images/smiley-cyrus.jpg'
+                }
                 alt="avatar"
                 className="author-avatar"
                 onError={(e) => {
@@ -72,7 +109,13 @@ const ArticleListPage = () => {
           <p className="article-description">{article.description}</p>
 
           <div className="article-footer">
-            <span className="likes">❤️ {article.favoritesCount} likes</span>
+            {/* КНОПКА ЛАЙКА */}
+            <button
+              className={`like-btn ${article.favorited ? 'active' : ''}`}
+              onClick={() => handleToggleLike(article.slug, article.favorited)}
+            >
+              {article.favorited ? '❤️' : '🤍'} {article.favoritesCount}
+            </button>
           </div>
         </div>
       ))}
