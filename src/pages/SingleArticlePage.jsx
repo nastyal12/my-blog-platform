@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom'; // Добавили useNavigate
 import ReactMarkdown from 'react-markdown';
-import { getSingleArticle } from '../services/api';
+import { getSingleArticle, deleteArticle } from '../services/api'; // Добавили deleteArticle
 
-const SingleArticlePage = () => {
+const SingleArticlePage = ({ user }) => {
+  // Принимаем залогиненного пользователя
   const { slug } = useParams();
+  const navigate = useNavigate();
+
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -24,6 +28,15 @@ const SingleArticlePage = () => {
     fetchArticle();
   }, [slug]);
 
+  const handleDelete = async () => {
+    try {
+      await deleteArticle(slug);
+      navigate('/articles');
+    } catch {
+      alert('Не удалось удалить статью');
+    }
+  };
+
   if (loading) return <div className="status">Download...</div>;
   if (error) return <div className="status error">{error}</div>;
   if (!article) return null;
@@ -36,7 +49,6 @@ const SingleArticlePage = () => {
 
       <article className="full-article">
         <header className="article-header">
-          {/* Левая часть: заголовок и теги */}
           <div className="title-section">
             <h1 className="main-title">{article.title}</h1>
             <div className="tag-list">
@@ -46,9 +58,23 @@ const SingleArticlePage = () => {
                 </span>
               ))}
             </div>
+
+            {/* КНОПКИ УПРАВЛЕНИЯ: Показываем только если user — автор */}
+            {user && user.username === article.author.username && (
+              <div className="article-actions">
+                <button
+                  className="delete-btn"
+                  onClick={() => setShowModal(true)}
+                >
+                  Delete
+                </button>
+                <Link to={`/articles/${slug}/edit`} className="edit-btn">
+                  Edit
+                </Link>
+              </div>
+            )}
           </div>
 
-          {/* Правая часть: автор и лайки */}
           <div className="article-meta-large">
             <div className="author-block">
               <div className="author-details">
@@ -78,6 +104,23 @@ const SingleArticlePage = () => {
           <ReactMarkdown>{article.body}</ReactMarkdown>
         </div>
       </article>
+
+      {/* МОДАЛЬНОЕ ОКНО: Вынесли в конец контейнера */}
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <p>Are you sure you want to delete this article?</p>
+            <div className="modal-buttons">
+              <button className="btn-no" onClick={() => setShowModal(false)}>
+                No
+              </button>
+              <button className="btn-yes" onClick={handleDelete}>
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

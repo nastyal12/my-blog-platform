@@ -192,3 +192,75 @@ body {
   gap: 10px;
   margin: 20px 0;
 }
+.article-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.delete-btn {
+  border: 1px solid #f5222d;
+  color: #f5222d;
+  background: white;
+  padding: 5px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  border: 1px solid var(--dark-green);
+  color: var(--dark-green);
+  text-decoration: none;
+  padding: 5px 15px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Стили модалки */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+}
+/* Добавь в index.css */
+.article-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  resize: vertical; /* Позволяет пользователю растягивать поле только вниз */
+  font-family: inherit;
+}
+
+.article-form h2 {
+  margin-bottom: 20px;
+  color: var(--deep-blue);
+  text-align: center;
+}
+.create-article-btn {
+  color: var(--soft-green);
+  border: 1px solid var(--soft-green);
+  padding: 5px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.create-article-btn:hover {
+  background-color: var(--soft-green);
+  color: var(--deep-blue);
+}

@@ -11,7 +11,7 @@ import SingleArticlePage from './pages/SingleArticlePage';
 import SignUpPage from './pages/SignUpPage'; // Создадим сейчас
 import SignInPage from './pages/SignInPage'; // Создадим сейчас
 import ProfilePage from './pages/ProfilePage'; // Создадим сейчас
-
+import ArticleFormPage from './pages/ArticleFormPage';
 function App() {
   const [user, setUser] = useState(() => {
     // Эта функция выполнится только один раз при самом первом запуске приложения
@@ -37,6 +37,9 @@ function App() {
               {user ? (
                 // Если пользователь вошел: имя + аватар + кнопка выхода
                 <div className="user-menu">
+                  <Link to="/new-article" className="create-article-btn">
+                    Create Article
+                  </Link>
                   <Link to="/profile" className="user-profile-link">
                     <span>{user.username}</span>
                     <img
@@ -69,8 +72,10 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/articles" />} />
             <Route path="/articles" element={<ArticleListPage />} />
-            <Route path="/articles/:slug" element={<SingleArticlePage />} />
-
+            <Route
+              path="/articles/:slug"
+              element={<SingleArticlePage user={user} />}
+            />
             {/* Новые маршруты */}
             <Route path="/sign-up" element={<SignUpPage setUser={setUser} />} />
             <Route path="/sign-in" element={<SignInPage setUser={setUser} />} />
@@ -79,6 +84,26 @@ function App() {
               element={
                 user ? (
                   <ProfilePage user={user} setUser={setUser} />
+                ) : (
+                  <Navigate to="/sign-in" />
+                )
+              }
+            />
+            <Route
+              path="/new-article"
+              element={
+                user ? (
+                  <ArticleFormPage isEdit={false} />
+                ) : (
+                  <Navigate to="/sign-in" />
+                )
+              }
+            />
+            <Route
+              path="/articles/:slug/edit"
+              element={
+                user ? (
+                  <ArticleFormPage isEdit={true} />
                 ) : (
                   <Navigate to="/sign-in" />
                 )
