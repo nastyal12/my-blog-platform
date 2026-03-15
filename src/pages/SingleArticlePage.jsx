@@ -59,18 +59,17 @@ const SingleArticlePage = ({ user }) => {
               ))}
             </div>
 
-            {/* КНОПКИ УПРАВЛЕНИЯ: Показываем только если user — автор */}
             {user && user.username === article.author.username && (
               <div className="article-actions">
+                <Link to={`/articles/${slug}/edit`} className="edit-btn">
+                  Edit
+                </Link>
                 <button
                   className="delete-btn"
                   onClick={() => setShowModal(true)}
                 >
                   Delete
                 </button>
-                <Link to={`/articles/${slug}/edit`} className="edit-btn">
-                  Edit
-                </Link>
               </div>
             )}
           </div>
@@ -105,17 +104,16 @@ const SingleArticlePage = ({ user }) => {
         </div>
       </article>
 
-      {/* МОДАЛЬНОЕ ОКНО: Вынесли в конец контейнера */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <p>Are you sure you want to delete this article?</p>
             <div className="modal-buttons">
-              <button className="btn-no" onClick={() => setShowModal(false)}>
-                No
-              </button>
               <button className="btn-yes" onClick={handleDelete}>
                 Yes
+              </button>
+              <button className="btn-no" onClick={() => setShowModal(false)}>
+                No
               </button>
             </div>
           </div>

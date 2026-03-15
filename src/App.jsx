@@ -8,13 +8,14 @@ import {
 } from 'react-router-dom';
 import ArticleListPage from './pages/ArticleListPage';
 import SingleArticlePage from './pages/SingleArticlePage';
-import SignUpPage from './pages/SignUpPage'; // Создадим сейчас
-import SignInPage from './pages/SignInPage'; // Создадим сейчас
-import ProfilePage from './pages/ProfilePage'; // Создадим сейчас
+import SignUpPage from './pages/SignUpPage';
+import SignInPage from './pages/SignInPage';
+import SettingsPage from './pages/SettingsPage'; // Страница с формой (Edit Profile)
+import ProfilePage from './pages/ProfilePage';
 import ArticleFormPage from './pages/ArticleFormPage';
+
 function App() {
   const [user, setUser] = useState(() => {
-    // Эта функция выполнится только один раз при самом первом запуске приложения
     const savedUser = localStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : null;
   });
@@ -30,40 +31,60 @@ function App() {
         <header className="main-header">
           <div className="container header-content">
             <Link to="/" className="logo">
-              My Blog Platform
+              Realworld Blog
             </Link>
 
             <nav className="auth-nav">
-              {user ? (
-                // Если пользователь вошел: имя + аватар + кнопка выхода
-                <div className="user-menu">
-                  <Link to="/new-article" className="create-article-btn">
-                    Create Article
-                  </Link>
-                  <Link to="/profile" className="user-profile-link">
-                    <span>{user.username}</span>
-                    <img
-                      src={
-                        user.image ||
-                        'https://static.productionready.io/images/smiley-cyrus.jpg'
-                      }
-                      alt="avatar"
-                      className="header-avatar"
-                    />
-                  </Link>
-                  <button onClick={handleLogout} className="logout-btn">
-                    Log Out
-                  </button>
-                </div>
-              ) : (
-                // Если не вошел: ссылки на вход и регистрацию
-                <div className="guest-menu">
-                  <Link to="/sign-in">Sign In</Link>
-                  <Link to="/sign-up" className="sign-up-link">
-                    Sign Up
-                  </Link>
-                </div>
-              )}
+              <div
+                className="nav-container"
+                style={{ display: 'flex', alignItems: 'center' }}
+              >
+                {/* 1. Home всегда крайний слева */}
+                <Link to="/" className="nav-link">
+                  Home
+                </Link>
+
+                {user ? (
+                  // МЕНЮ ДЛЯ АВТОРИЗОВАННОГО
+                  <div
+                    className="user-menu"
+                    style={{ display: 'flex', alignItems: 'center' }}
+                  >
+                    <Link to="/new-article" className="nav-link">
+                      <span style={{ color: '#5cb85c', marginRight: '4px' }}>
+                        ✎
+                      </span>{' '}
+                      New Post
+                    </Link>
+                    {/* Settings — это страница обновления профиля (PUT) */}
+                    <Link to="/settings" className="nav-link">
+                      <span style={{ color: '#5cb85c', marginRight: '4px' }}>
+                        ⚙
+                      </span>{' '}
+                      Settings
+                    </Link>
+                    <Link to="/profile" className="nav-link">
+                      <span style={{ color: '#5cb85c', marginRight: '4px' }}>
+                        👤
+                      </span>{' '}
+                      Profile
+                    </Link>
+                    <button onClick={handleLogout} className="logout-btn">
+                      Log Out
+                    </button>
+                  </div>
+                ) : (
+                  // МЕНЮ ДЛЯ ГОСТЯ
+                  <div className="guest-menu" style={{ display: 'flex' }}>
+                    <Link to="/sign-in" className="nav-link">
+                      Sign In
+                    </Link>
+                    <Link to="/sign-up" className="nav-link">
+                      Sign Up
+                    </Link>
+                  </div>
+                )}
+              </div>
             </nav>
           </div>
         </header>
@@ -76,9 +97,25 @@ function App() {
               path="/articles/:slug"
               element={<SingleArticlePage user={user} />}
             />
-            {/* Новые маршруты */}
+
             <Route path="/sign-up" element={<SignUpPage setUser={setUser} />} />
             <Route path="/sign-in" element={<SignInPage setUser={setUser} />} />
+
+            {/* Настройки (Settings) и Профиль (Profile) */}
+            <Route
+              path="/settings"
+              element={
+                user ? (
+                  <SettingsPage
+                    user={user}
+                    setUser={setUser}
+                    isSettings={true}
+                  />
+                ) : (
+                  <Navigate to="/sign-in" />
+                )
+              }
+            />
             <Route
               path="/profile"
               element={
@@ -89,6 +126,7 @@ function App() {
                 )
               }
             />
+
             <Route
               path="/new-article"
               element={

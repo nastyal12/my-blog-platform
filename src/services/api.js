@@ -20,11 +20,18 @@ api.interceptors.request.use(
   },
 );
 
-export const getArticles = async (page = 1) => {
-  const limit = 5;
+// Добавь params в скобки функции!
+export const getArticles = async (page = 1, params = {}) => {
+  const limit = 10; // Сделаем 10 для соответствия макету
   const offset = (page - 1) * limit;
+
   const response = await api.get(`/articles`, {
-    params: { limit, offset },
+    // Теперь передаем и лимит, и пришедшие фильтры (author или favorited)
+    params: {
+      limit,
+      offset,
+      ...params,
+    },
   });
   return response.data;
 };
@@ -35,15 +42,21 @@ export const getSingleArticle = async (slug) => {
 };
 
 export const createArticle = async (data) => {
-  const response = await api.post('/articles', { article: data });
+  // Убираем { article: data }, так как data уже содержит эту обертку из компонента
+  const response = await api.post('/articles', data);
   return response.data;
 };
 
 export const updateArticle = async (slug, data) => {
-  const response = await api.put(`/articles/${slug}`, { article: data });
+  // То же самое здесь — передаем data напрямую
+  const response = await api.put(`/articles/${slug}`, data);
   return response.data;
 };
-
+// updateProfile
+export const updateProfile = async (userData) => {
+  const response = await api.put('/user', userData);
+  return response.data;
+};
 export const deleteArticle = async (slug) => {
   await api.delete(`/articles/${slug}`);
 };
@@ -53,7 +66,7 @@ export const favoriteArticle = async (slug) => {
   return response.data;
 };
 
-// Убрать лайк
+// убирание лайка
 export const unfavoriteArticle = async (slug) => {
   const response = await api.delete(`/articles/${slug}/favorite`);
   return response.data;

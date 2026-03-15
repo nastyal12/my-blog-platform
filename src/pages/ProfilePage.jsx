@@ -1,96 +1,172 @@
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { updateUser } from '../services/auth'; // Не забудь добавить этот метод в auth.js
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { getArticles } from '../services/api';
 
-const ProfilePage = ({ user, setUser }) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setError,
-  } = useForm({
-    // Подставляем текущие данные пользователя в поля формы сразу
-    defaultValues: {
-      username: user.username,
-      email: user.email,
-      image: user.image,
-    },
-  });
+const ProfilePage = ({ user }) => {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('my');
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchArticles = async () => {
+      if (!user?.username) return;
 
-  const onSubmit = async (data) => {
-    try {
-      // Если поле пароля пустое — не отправляем его на сервер
-      if (!data.password) {
-        delete data.password;
+      setLoading(true);
+      try {
+        console.log(
+          `Загрузка статей для: ${user.username}, вкладка: ${activeTab}`,
+        );
+
+        const queryParams =
+          activeTab === 'my'
+            ? { author: user.username }
+            : { favorited: user.username };
+
+        const data = await getArticles(1, queryParams);
+
+        setArticles(data.articles || []);
+      } catch (err) {
+        console.error('Ошибка загрузки статей профиля:', err);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      const response = await updateUser(data);
-      localStorage.setItem('user', JSON.stringify(response.user));
-      setUser(response.user);
-      alert('Profile updated successfully!');
-      navigate('/articles');
-    } catch (err) {
-      if (err.response?.data?.errors) {
-        const serverErrors = err.response.data.errors;
-        Object.keys(serverErrors).forEach((key) => {
-          setError(key, {
-            type: 'server',
-            message: `${key} ${serverErrors[key]}`,
-          });
-        });
-      }
-    }
-  };
+    fetchArticles();
+  }, [user?.username, activeTab]);
+
+  if (!user) return <div className="container">Loading user...</div>;
 
   return (
-    <div className="auth-container">
-      <form className="auth-form" onSubmit={handleSubmit(onSubmit)}>
-        <h2>Edit Profile</h2>
-
-        <div className="form-group">
-          <label>Username</label>
-          <input {...register('username', { required: 'Required' })} />
-          {errors.username && (
-            <p className="error-msg">{errors.username.message}</p>
-          )}
+    <div className="profile-page">
+      <div className="user-info">
+        <div className="container">
+          <div className="row">
+            <div className="col-xs-12 col-md-10 offset-md-1">
+              <img
+                src={
+                  user.image ||
+                  'https://static.productionready.io/images/smiley-cyrus.jpg'
+                }
+                className="user-img"
+                alt={user.username}
+              />
+              <h4>{user.username}</h4>
+              <p>{user.bio}</p>
+              <Link
+                to="/settings"
+                className="btn btn-sm btn-outline-secondary action-btn edit-btn"
+              >
+                <i className="ion-gear-a"></i> Edit Profile Settings
+              </Link>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div className="form-group">
-          <label>Email address</label>
-          <input
-            type="email"
-            {...register('email', { required: 'Required' })}
-          />
-          {errors.email && <p className="error-msg">{errors.email.message}</p>}
+      <div className="container">
+        <div className="row">
+          <div className="col-xs-12 col-md-10 offset-md-1">
+            <div className="articles-toggle">
+              <ul
+                className="nav nav-pills outline-active"
+                style={{ listStyle: 'none', padding: 0, display: 'flex' }}
+              >
+                <li className="nav-item">
+                  <button
+                    className={`nav-link ${activeTab === 'my' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('my')}
+                    style={{
+                      border: 'none',
+                      background: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    My Articles
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className={`nav-link ${activeTab === 'fav' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('fav')}
+                    style={{
+                      border: 'none',
+                      background: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Favorited Articles
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            {loading ? (
+              <div className="article-preview">Loading articles...</div>
+            ) : articles.length > 0 ? (
+              articles.map((article) => (
+                <div
+                  key={article.slug}
+                  className="article-preview article-card"
+                >
+                  <div className="article-meta">
+                    <Link to={`/profile/${article.author.username}`}>
+                      <img
+                        className="author-avatar"
+                        src={
+                          article.author.image ||
+                          'https://static.productionready.io/images/smiley-cyrus.jpg'
+                        }
+                        alt={article.author.username}
+                      />
+                    </Link>
+                    <div className="info">
+                      <Link
+                        to={`/profile/${article.author.username}`}
+                        className="author author-name"
+                      >
+                        {article.author.username}
+                      </Link>
+                      <span className="date">
+                        {new Date(article.createdAt).toDateString()}
+                      </span>
+                    </div>
+                    <button className="btn btn-outline-primary btn-sm pull-xs-right">
+                      <i className="ion-heart"></i> {article.favoritesCount}
+                    </button>
+                  </div>
+
+                  <Link
+                    to={`/article/${article.slug}`}
+                    className="preview-link"
+                  >
+                    <h1 className="article-title">{article.title}</h1>
+                    <p>{article.description}</p>
+                    <span>Read more...</span>
+                    <ul
+                      className="tag-list"
+                      style={{ listStyle: 'none', padding: 0 }}
+                    >
+                      {article.tagList?.map((tag) => (
+                        <li
+                          key={tag}
+                          className="tag-default tag-pill tag-outline"
+                        >
+                          {tag}
+                        </li>
+                      ))}
+                    </ul>
+                  </Link>
+                </div>
+              ))
+            ) : (
+              <div className="article-preview">
+                No articles are here... yet.
+              </div>
+            )}
+          </div>
         </div>
-
-        <div className="form-group">
-          <label>New password</label>
-          <input
-            type="password"
-            placeholder="New password"
-            {...register('password', { minLength: 6, maxLength: 40 })}
-          />
-          {errors.password && (
-            <p className="error-msg">Password must be 6-40 characters</p>
-          )}
-        </div>
-
-        <div className="form-group">
-          <label>Avatar image (URL)</label>
-          <input
-            placeholder="Avatar URL"
-            {...register('image', { pattern: /^(ftp|http|https):\/\/[^ "]+$/ })}
-          />
-          {errors.image && <p className="error-msg">Must be a valid URL</p>}
-        </div>
-
-        <button type="submit" className="auth-btn">
-          Save Changes
-        </button>
-      </form>
+      </div>
     </div>
   );
 };

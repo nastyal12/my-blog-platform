@@ -1,14 +1,16 @@
 :root {
   --deep-blue: #003a70;
-  --soft-green: #e8f5e9;
-  --dark-green: #2e7d32;
-  --bg-color: #f4f7f6;
+  --soft-blue: #f0f4f8;
+  --light-gray: #f4f7f6;
+  --border-color: #ced4da;
+  --text-gray: #666;
 }
 
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: var(--bg-color);
+  background-color: var(--light-gray);
+  color: #333;
 }
 
 /* --- ШАПКА ПРИЛОЖЕНИЯ --- */
@@ -30,53 +32,97 @@ body {
 }
 
 .logo {
-  color: white;
-  text-decoration: none;
+  color: white !important;
+  text-decoration: none !important;
   font-size: 1.5rem;
   font-weight: bold;
 }
 
 .auth-nav a, .user-profile-link {
-  color: white;
-  text-decoration: none;
+  color: white !important;
+  text-decoration: none !important;
   margin-left: 20px;
   font-weight: 500;
 }
 
-.sign-up-link {
-  border: 1px solid white;
-  padding: 5px 15px;
-  border-radius: 4px;
-}
-
-.user-menu {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
 .header-avatar {
-  width: 35px;
-  height: 35px;
+  width: 35px !important;
+  height: 35px !important;
   border-radius: 50%;
-  border: 2px solid var(--soft-green);
+  border: 2px solid rgba(255,255,255,0.5);
   vertical-align: middle;
+  object-fit: cover;
+  background-color: #eee;
 }
 
-.logout-btn {
-  background: transparent;
-  border: 1px solid white;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-/* --- ГЛАВНЫЙ КОНТЕЙНЕР --- */
+/* --- КОНТЕЙНЕР --- */
 .container {
   max-width: 940px;
   margin: 0 auto;
   padding: 0 20px;
+}
+
+/* --- СТРАНИЦА ПРОФИЛЯ --- */
+.profile-page .user-info {
+  background: var(--soft-blue) !important;
+  padding: 40px 0 !important;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.profile-page .user-img {
+  width: 120px !important;
+  height: 120px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  margin: 0 auto 20px auto;
+  display: block;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 15px rgba(0, 58, 112, 0.15);
+  background-color: #e1e8ed;
+}
+
+.profile-page h4 {
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  color: var(--deep-blue) !important;
+}
+
+/* Вкладки (Tabs) */
+.articles-toggle {
+  margin: 30px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-pills {
+  display: flex;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 0;
+  list-style: none;
+  background: white;
+}
+
+.nav-pills .nav-link {
+  color: var(--text-gray) !important;
+  padding: 12px 30px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  cursor: pointer;
+  background: white !important;
+  border-right: 1px solid var(--border-color) !important;
+}
+
+.nav-pills .nav-link.active {
+  background-color: var(--deep-blue) !important;
+  color: white !important;
+}
+
+.nav-pills .nav-link:last-child {
+  border-right: none !important;
 }
 
 /* --- КАРТОЧКИ СТАТЕЙ --- */
@@ -86,141 +132,284 @@ body {
   padding: 25px;
   margin-bottom: 25px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  border-top: 4px solid var(--deep-blue);
-}
-
-.article-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 15px;
+  border-top: 4px solid var(--deep-blue); /* Синий акцент вместо зеленого */
 }
 
 .article-title {
-  color: var(--deep-blue);
-  text-decoration: none;
-  font-size: 1.3rem;
+  color: var(--deep-blue) !important;
+  text-decoration: none !important;
+  font-size: 1.4rem;
   font-weight: bold;
-}
-
-.article-author {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-align: right;
+  display: block;
+  margin-bottom: 10px;
 }
 
 .author-name {
-  display: block;
   font-weight: bold;
-  color: var(--deep-blue);
+  color: var(--deep-blue) !important;
+  text-decoration: none !important;
 }
-/* Добавь это в index.css, чтобы аватарки не растягивались, если загрузится огромная картинка */
-/* Базовые стили для всех маленьких аватарок */
-.author-avatar, 
-.header-avatar {
+
+.author-avatar {
   width: 35px !important;
   height: 35px !important;
-  min-width: 35px;
-  min-height: 35px;
-  flex-shrink: 0; /* Запрещает флексу сжимать картинку */
   border-radius: 50%;
   object-fit: cover;
   background-color: #eee;
 }
 
-/* Стили для КРУПНОЙ аватарки на странице статьи */
-.author-avatar-large {
-  width: 45px !important;
-  height: 45px !important;
-  min-width: 45px;
-  min-height: 45px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--soft-green);
-}
-/* --- ФОРМЫ (LOGIN / SIGNUP) --- */
-.auth-container {
-  display: flex;
-  justify-content: center;
-  padding-top: 30px;
+/* Read more и описание */
+.preview-link {
+  text-decoration: none !important;
 }
 
-.auth-form {
+.preview-link p {
+  color: var(--text-gray) !important;
+}
+
+.preview-link span {
+  color: #999 !important;
+  font-size: 0.85rem;
+}
+
+/* Теги */
+.tag-pill {
+  background-color: #f0f2f5 !important;
+  color: #65676b !important;
+  padding: 3px 10px;
+  margin-right: 5px;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  border: 1px solid #ddd;
+}
+
+/* --- КНОПКИ --- */
+.edit-btn, .auth-btn {
+  display: inline-block;
+  background: white;
+  border: 1px solid var(--deep-blue);
+  color: var(--deep-blue) !important;
+  padding: 8px 20px;
+  border-radius: 6px;
+  text-decoration: none !important;
+  font-weight: 600;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.edit-btn:hover, .auth-btn:hover {
+  background: var(--deep-blue);
+  color: white !important;
+}
+
+/* Исправление пустых src (чтобы не было рамки вокруг битой картинки) */
+img[src=""], img:not([src]) {
+  visibility: hidden;
+}
+/* --- ЦЕНТРИРОВАНИЕ И СТИЛИЗАЦИЯ ФОРМ --- */
+
+/* Контейнер для Sign In / Sign Up */
+.auth-container, 
+.settings-page .container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  min-height: 80vh !important;
+  padding-top: 50px !important;
+}
+
+/* Сама форма (белая карточка) */
+.auth-form, 
+.settings-page form {
+  background: white !important;
+  padding: 40px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px rgba(0, 58, 112, 0.08) !important;
+  border-top: 6px solid var(--deep-blue) !important;
+  width: 100% !important;
+  max-width: 450px !important; /* Ограничиваем ширину, чтобы она была по центру */
+}
+
+/* Заголовки внутри форм */
+.auth-form h2, 
+.settings-page h1 {
+  text-align: center !important;
+  color: var(--deep-blue) !important;
+  margin-bottom: 25px !important;
+  font-weight: 700 !important;
+}
+
+/* Группы полей ввода */
+.form-group {
+  margin-bottom: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.form-group label {
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+  color: #333 !important;
+  text-align: left !important;
+}
+
+/* Растягиваем инпуты на всю ширину (исправляем узкие поля) */
+.auth-form input, 
+.settings-page input,
+.settings-page textarea {
+  width: 100% !important;
+  display: block !important;
+  padding: 12px 15px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 8px !important;
+  box-sizing: border-box !important; /* Гарантирует, что padding не вылезает за края */
+  font-size: 1rem !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Подсветка при клике */
+.auth-form input:focus, 
+.settings-page input:focus {
+  border-color: var(--deep-blue) !important;
+  box-shadow: 0 0 0 3px rgba(0, 58, 112, 0.1) !important;
+  outline: none !important;
+}
+
+/* Кнопка (Login / Save Changes) */
+.auth-btn, 
+.settings-page .btn-primary {
+  width: 100% !important;
+  background-color: var(--deep-blue) !important;
+  color: white !important;
+  border: none !important;
+  padding: 14px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+  cursor: pointer !important;
+  margin-top: 10px !important;
+}
+
+/* Ссылка под кнопкой */
+.auth-switch {
+  text-align: center !important;
+  margin-top: 20px !important;
+}
+
+.auth-switch a {
+  color: var(--deep-blue) !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline !important;
+}
+/* Финальный и точный стиль для кнопки в App.jsx */
+.logout-btn {
+  background-color: transparent !important; /* Убираем белый фон */
+  color: #ffffff !important; /* Делаем текст белым */
+  border: 1px solid rgba(255, 255, 255, 0.5) !important; /* Тонкая полупрозрачная рамка */
+  padding: 4px 12px !important;
+  border-radius: 6px !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  margin-left: 15px !important; /* Отступ от иконки профиля */
+}
+
+/* Эффект при наведении */
+.logout-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important; /* Легкий блик */
+  border-color: #ffffff !important; /* Рамка становится ярче */
+  transform: translateY(-1px); /* Небольшой эффект нажатия */
+}
+/* --- СТРАНИЦА СТАТЬИ --- */
+.full-article {
   background: white;
   padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 450px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 58, 112, 0.08);
   border-top: 6px solid var(--deep-blue);
+  margin-top: 20px;
 }
 
-.form-group {
-  margin-bottom: 20px;
+.main-title {
+  font-size: 2.5rem;
+  color: var(--deep-blue);
+  margin-bottom: 15px;
 }
 
-.form-group input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.error-msg {
-  color: #f5222d;
-  font-size: 13px;
-  margin-top: 5px;
-}
-
-.auth-btn {
-  width: 100%;
-  background: var(--deep-blue);
-  color: white;
-  border: none;
-  padding: 14px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 18px;
-}
-
-.checkbox-group {
+/* Мета-данные (автор, дата) */
+.article-meta-large {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin: 20px 0;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 30px;
 }
+
+.author-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.author-avatar-large {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+/* Кнопки управления */
 .article-actions {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
+  margin: 15px 0;
+}
+
+.delete-btn, .edit-btn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
 }
 
 .delete-btn {
-  border: 1px solid #f5222d;
+  background: transparent;
   color: #f5222d;
-  background: white;
-  padding: 5px 15px;
-  border-radius: 4px;
-  cursor: pointer;
+  border: 1px solid #f5222d;
+}
+
+.delete-btn:hover {
+  background: #fff1f0;
 }
 
 .edit-btn {
-  border: 1px solid var(--dark-green);
-  color: var(--dark-green);
+  background: transparent;
+  color: var(--deep-blue);
+  border: 1px solid var(--deep-blue);
   text-decoration: none;
-  padding: 5px 15px;
-  border-radius: 4px;
-  font-size: 14px;
 }
 
-/* Стили модалки */
+.edit-btn:hover {
+  background: rgba(0, 58, 112, 0.05);
+}
+
+/* --- МОДАЛЬНОЕ ОКНО --- */
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -230,37 +419,33 @@ body {
 .modal-content {
   background: white;
   padding: 30px;
-  border-radius: 8px;
+  border-radius: 12px;
   text-align: center;
-}
-/* Добавь в index.css */
-.article-form textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-  resize: vertical; /* Позволяет пользователю растягивать поле только вниз */
-  font-family: inherit;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
 }
 
-.article-form h2 {
-  margin-bottom: 20px;
-  color: var(--deep-blue);
-  text-align: center;
-}
-.create-article-btn {
-  color: var(--soft-green);
-  border: 1px solid var(--soft-green);
-  padding: 5px 12px;
-  border-radius: 4px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 14px;
-  transition: all 0.2s;
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
 }
 
-.create-article-btn:hover {
-  background-color: var(--soft-green);
-  color: var(--deep-blue);
+.btn-yes {
+  background: #f5222d;
+  color: white;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-no {
+  background: #eee;
+  color: #333;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 6px;
+  cursor: pointer;
 }

@@ -7,7 +7,7 @@ import {
 } from '../services/api';
 
 const ArticleListPage = ({ user }) => {
-  // Добавили user из пропсов
+  //  user из пропсов
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -53,7 +53,6 @@ const ArticleListPage = ({ user }) => {
         response = await favoriteArticle(slug);
       }
 
-      // ВАЖНО: сервер возвращает объект { article: ... }
       const updatedArticle = response.article;
 
       setArticles((prev) =>
@@ -76,54 +75,56 @@ const ArticleListPage = ({ user }) => {
     <div className="container">
       {articles.map((article) => (
         <div key={article.slug} className="article-card">
-          <div className="article-header">
-            <div className="article-info">
-              <Link to={`/articles/${article.slug}`} className="article-title">
-                {article.title}
+          <div className="article-meta">
+            <div className="author-info">
+              <Link to={`/profile/${article.author.username}`}>
+                <img
+                  src={
+                    article.author.image ||
+                    'https://api.dicebear.com/7.x/avataaars/svg?seed=Anastasia'
+                  }
+                  alt="avatar"
+                  className="author-avatar"
+                  onError={(e) => {
+                    e.target.src =
+                      'https://static.productionready.io/images/smiley-cyrus.jpg';
+                  }}
+                />
               </Link>
-              <div className="tag-list">
-                {article.tagList.map((tag, index) => (
-                  <span key={index} className="tag">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="article-author">
-              <div className="author-text">
-                <span className="author-name">{article.author.username}</span>
-                <span className="article-date">
+              <div className="details">
+                <Link
+                  to={`/profile/${article.author.username}`}
+                  className="author-name"
+                >
+                  {article.author.username}
+                </Link>
+                <span className="date">
                   {new Date(article.createdAt).toLocaleDateString()}
                 </span>
               </div>
-              <img
-                src={
-                  article.author.image ||
-                  'https://static.productionready.io/images/smiley-cyrus.jpg'
-                }
-                alt="avatar"
-                className="author-avatar"
-                onError={(e) => {
-                  e.target.src =
-                    'https://static.productionready.io/images/smiley-cyrus.jpg';
-                }}
-              />
             </div>
-          </div>
 
-          <p className="article-description">{article.description}</p>
-
-          <div className="article-footer">
             <button
-              className={`like-btn ${article.favorited ? 'active' : ''}`}
-              onClick={(e) => {
-                e.preventDefault(); // На случай, если кнопка внутри Link
-                handleToggleLike(article.slug, article.favorited);
-              }}
+              className={`like-button ${article.favorited ? 'active' : ''}`}
+              onClick={() => handleToggleLike(article.slug, article.favorited)}
             >
               {article.favorited ? '❤️' : '🤍'} {article.favoritesCount}
             </button>
+          </div>
+
+          <Link to={`/articles/${article.slug}`} className="preview-link">
+            <h1 className="article-title">{article.title}</h1>
+            <p className="article-description">{article.description}</p>
+            <span className="read-more">Read more...</span>
+          </Link>
+
+          <div className="tag-list">
+            {article.tagList &&
+              article.tagList.map((tag, index) => (
+                <span key={index} className="tag-pill">
+                  {tag}
+                </span>
+              ))}
           </div>
         </div>
       ))}

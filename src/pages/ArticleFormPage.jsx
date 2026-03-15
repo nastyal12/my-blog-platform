@@ -30,10 +30,18 @@ const ArticleFormPage = ({ isEdit }) => {
 
   const onSubmit = async (data) => {
     const formattedData = {
-      ...data,
-      tagList: data.tagList
-        ? data.tagList.split(',').map((tag) => tag.trim())
-        : [],
+      article: {
+        title: data.title,
+        description: data.description,
+        body: data.body,
+        // Фильтруем пустые значения, чтобы теги сохранялись корректно
+        tagList: data.tagList
+          ? data.tagList
+              .split(',')
+              .map((tag) => tag.trim())
+              .filter((tag) => tag !== '')
+          : [],
+      },
     };
 
     try {
@@ -44,8 +52,10 @@ const ArticleFormPage = ({ isEdit }) => {
       }
       navigate('/articles');
     } catch (err) {
-      console.error('Error saving article:', err); // Теперь err используется!
-      alert('Ошибка при сохранении статьи');
+      console.error(
+        'Ошибка при сохранении:',
+        err.response?.data || err.message,
+      );
     }
   };
 
