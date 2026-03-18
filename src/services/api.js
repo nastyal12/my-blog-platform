@@ -52,11 +52,7 @@ export const updateArticle = async (slug, data) => {
   const response = await api.put(`/articles/${slug}`, data);
   return response.data;
 };
-// updateProfile
-export const updateProfile = async (userData) => {
-  const response = await api.put('/user', userData);
-  return response.data;
-};
+
 export const deleteArticle = async (slug) => {
   await api.delete(`/articles/${slug}`);
 };
@@ -69,6 +65,22 @@ export const favoriteArticle = async (slug) => {
 // убирание лайка
 export const unfavoriteArticle = async (slug) => {
   const response = await api.delete(`/articles/${slug}/favorite`);
+  return response.data;
+};
+// В файле services/api.js (добавь эти функции к остальным)
+
+export const registerUser = async (data) => {
+  const response = await api.post('/users', { user: data });
+  return response.data;
+};
+
+export const loginUser = async (data) => {
+  const response = await api.post('/users/login', { user: data });
+  return response.data;
+};
+
+export const updateProfile = async (userData) => {
+  const response = await api.put('/user', { user: userData });
   return response.data;
 };
 export default api;

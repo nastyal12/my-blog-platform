@@ -51,14 +51,18 @@ const SingleArticlePage = ({ user }) => {
         <header className="article-header">
           <div className="title-section">
             <h1 className="main-title">{article.title}</h1>
+
+            {/* Просто отображаем теги как список */}
             <div className="tag-list">
-              {article.tagList.map((tag, i) => (
-                <span key={i} className="tag">
-                  {tag}
-                </span>
-              ))}
+              {article.tagList &&
+                article.tagList.map((tag, i) => (
+                  <span key={i} className="tag">
+                    {tag}
+                  </span>
+                ))}
             </div>
 
+            {/* Кнопки управления */}
             {user && user.username === article.author.username && (
               <div className="article-actions">
                 <Link to={`/articles/${slug}/edit`} className="edit-btn">

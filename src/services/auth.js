@@ -21,7 +21,3 @@ export const loginUser = async (data) => {
   const response = await api.post('/users/login', { user: data });
   return response.data;
 };
-export const updateUser = async (userData) => {
-  const response = await api.put('/user', userData);
-  return response.data;
-};

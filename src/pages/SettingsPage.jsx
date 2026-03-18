@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { updateUser } from '../services/auth';
+import { updateProfile } from '../services/api';
 import { useEffect } from 'react';
 
 const SettingsPage = ({ user, setUser }) => {
@@ -35,6 +35,7 @@ const SettingsPage = ({ user, setUser }) => {
       const cleanData = {
         username: data.username.trim(),
         email: data.email.trim(),
+        bio: data.bio ? data.bio.trim() : '',
         image: data.image || '',
       };
 
@@ -42,7 +43,7 @@ const SettingsPage = ({ user, setUser }) => {
         cleanData.password = data.password;
       }
 
-      const response = await updateUser(cleanData);
+      const response = await updateProfile(cleanData);
       localStorage.setItem('user', JSON.stringify(response.user));
       setUser(response.user);
 
@@ -112,7 +113,15 @@ const SettingsPage = ({ user, setUser }) => {
           />
           {errors.email && <p className="error-msg">{errors.email.message}</p>}
         </div>
-
+        <div className="form-group">
+          <label>Short bio about you</label>
+          <textarea
+            className="form-control"
+            rows="6"
+            placeholder="Write something about yourself"
+            {...register('bio')} // Регистрируем поле в react-hook-form
+          ></textarea>
+        </div>
         <div className="form-group" style={{ marginBottom: '20px' }}>
           <label
             style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}

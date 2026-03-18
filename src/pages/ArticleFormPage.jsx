@@ -23,32 +23,39 @@ const ArticleFormPage = ({ isEdit }) => {
         setValue('title', article.title);
         setValue('description', article.description);
         setValue('body', article.body);
-        setValue('tagList', article.tagList.join(', '));
+        // Заполняем теги, чтобы они были видны в форме, если нужно
+        if (article.tagList) {
+          setValue('tagList', article.tagList.join(', '));
+        }
       });
     }
   }, [isEdit, slug, setValue]);
 
   const onSubmit = async (data) => {
-    const formattedData = {
-      article: {
-        title: data.title,
-        description: data.description,
-        body: data.body,
-        // Фильтруем пустые значения, чтобы теги сохранялись корректно
-        tagList: data.tagList
-          ? data.tagList
-              .split(',')
-              .map((tag) => tag.trim())
-              .filter((tag) => tag !== '')
-          : [],
-      },
+    // 1. Создаем базовый объект БЕЗ тегов
+    const articlePayload = {
+      title: data.title,
+      description: data.description,
+      body: data.body,
     };
+
+    // 2. Если это создание НОВОЙ статьи, добавляем теги
+    if (!isEdit) {
+      articlePayload.tagList = data.tagList
+        ? data.tagList
+            .split(',')
+            .map((tag) => tag.trim())
+            .filter((tag) => tag !== '')
+        : [];
+    }
 
     try {
       if (isEdit) {
-        await updateArticle(slug, formattedData);
+        // При обновлении отправляем объект без ключа tagList
+        await updateArticle(slug, { article: articlePayload });
       } else {
-        await createArticle(formattedData);
+        // При создании отправляем полный объект
+        await createArticle({ article: articlePayload });
       }
       navigate('/articles');
     } catch (err) {
@@ -99,13 +106,16 @@ const ArticleFormPage = ({ isEdit }) => {
           {errors.body && <p className="error-msg">{errors.body.message}</p>}
         </div>
 
-        <div className="form-group">
-          <label>Tags (comma separated)</label>
-          <input {...register('tagList')} placeholder="Tags" />
-        </div>
+        {/* 3. СКРЫВАЕМ поле тегов, если мы в режиме редактирования */}
+        {!isEdit && (
+          <div className="form-group">
+            <label>Tags (comma separated)</label>
+            <input {...register('tagList')} placeholder="Tags" />
+          </div>
+        )}
 
         <button type="submit" className="auth-btn">
-          Send
+          {isEdit ? 'Save Changes' : 'Send'}
         </button>
       </form>
     </div>
